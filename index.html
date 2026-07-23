@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,7 +74,6 @@
             font-size: 0.95rem;
             cursor: pointer;
             transition: color 0.3s;
-            touch-action: manipulation;
         }
 
         nav button:hover, nav button.active {
@@ -215,7 +215,6 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            touch-action: manipulation;
         }
 
         .card:hover {
@@ -292,25 +291,23 @@
         }
 
         .faq-question {
-            width: 100%;
-            background: none;
-            border: none;
             padding: 20px;
             color: var(--text-light);
             font-weight: 600;
-            font-size: 1rem;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            text-align: left;
-            touch-action: manipulation;
+            user-select: none;
+            position: relative;
+            z-index: 10;
         }
 
         .faq-question:hover {
             color: var(--gold-primary);
         }
 
+        /* Essential Fix: Forces mobile touch vectors to hit container instead of internal text layers */
         .faq-question span {
             pointer-events: none;
         }
@@ -394,25 +391,11 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
-            touch-action: manipulation;
         }
 
         .cta-form button:hover {
             background-color: var(--gold-hover);
         }
-
-        .cta-form button:disabled {
-            background-color: var(--text-muted);
-            cursor: not-allowed;
-        }
-
-        .status-msg {
-            margin-top: 15px;
-            font-size: 0.95rem;
-            min-height: 1.2em;
-        }
-        .status-msg.success { color: #3fb950; }
-        .status-msg.error { color: #f85149; }
 
         /* Subpage Presentation Layout */
         .subpage-content {
@@ -501,7 +484,6 @@
             border-radius: 4px;
             transition: all 0.3s;
             margin-top: 20px;
-            touch-action: manipulation;
         }
 
         .back-btn:hover {
@@ -713,50 +695,48 @@
             <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 30px;">Frequently Asked Questions</h2>
             
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
+                <div class="faq-question" onclick="toggleFaq(this)">
                     <span>Who are these protocols engineered for?</span>
                     <span class="faq-toggle">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     <p>These blueprints are structured for entrepreneurs, builders, and long-term strategists who want clear, calculated methodologies to grow capital rather than relying on standard economic trends.</p>
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
+                <div class="faq-question" onclick="toggleFaq(this)">
                     <span>Can I combine multiple protocols?</span>
                     <span class="faq-toggle">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     <p>Yes. The most successful framework involves using Protocol 1 or 2 to generate massive active income cash flow, then utilizing Protocol 3 to aggressively preserve and multiply it in long-term assets.</p>
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
+                <div class="faq-question" onclick="toggleFaq(this)">
                     <span>How often are these blueprints updated?</span>
                     <span class="faq-toggle">+</span>
-                </button>
+                </div>
                 <div class="faq-answer">
                     <p>Our operational architectures are continuously audited to adjust to modern macroeconomic adjustments, digital market drops, and local industry fragmentation shifts.</p>
                 </div>
             </div>
         </section>
 
-    <!-- Final Premium CTA Section (Custom Styled Kit Form) -->
+        <!-- Final Premium CTA Section -->
         <section class="cta-section">
             <div class="cta-box">
                 <h2>Access the Architecture</h2>
                 <p>Join the inner circle to receive updates when new macro protocols and technical blueprints are added to the vault.</p>
-                
-                <!-- Kit Form Integration Endpoint -->
-                <form action="https://app.kit.com/forms/9719506/subscriptions" method="post" data-sv-form="9719506" data-uid="671e91e46e" data-format="inline" data-version="5" class="cta-form">
-                    <input type="email" name="email_address" placeholder="Enter your elite email address" required autocomplete="email">
+                <form class="cta-form" onsubmit="event.preventDefault(); alert('Transmission Received.');">
+                    <input type="email" placeholder="Enter your elite email address" required>
                     <button type="submit">Secure Entry</button>
                 </form>
-                <p class="status-msg" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 15px;">We respect your privacy. Unsubscribe at any time.</p>
             </div>
         </section>
+    </div>
 
 
     <!-- ================= METHOD 1 VIEW ================= -->
@@ -1034,7 +1014,7 @@
         <p>&copy; 2026 Millionaire Protocol. Premium Assets Layout Design.</p>
     </footer>
 
-    <!-- Script Routing & Form Logic -->
+    <!-- Script Routing Logic -->
     <script>
         function showPage(pageId) {
             const pages = document.querySelectorAll('.page-view');
@@ -1054,57 +1034,12 @@
         }
 
         function toggleFaq(element) {
+            // Mobile-optimized traversal layer maps instantly to container even on rapid touches
             const item = element.closest('.faq-item');
             if (item) {
                 item.classList.toggle('open');
             }
         }
-
-        // Web3Forms API Handling
-        const form = document.getElementById('protocol-email-form');
-        const statusMsg = document.getElementById('form-status');
-        const submitBtn = document.getElementById('submit-btn');
-
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Securing...';
-            statusMsg.textContent = '';
-            statusMsg.className = 'status-msg';
-
-            const formData = new FormData(form);
-            const object = Object.fromEntries(formData);
-            const json = JSON.stringify(object);
-
-            try {
-                const response = await fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: json
-                });
-
-                const result = await response.json();
-
-                if (response.status === 200) {
-                    statusMsg.className = 'status-msg success';
-                    statusMsg.textContent = '✓ Entry secured. Welcome to the vault.';
-                    form.reset();
-                } else {
-                    statusMsg.className = 'status-msg error';
-                    statusMsg.textContent = result.message || 'Transmission failed. Please try again.';
-                }
-            } catch (error) {
-                statusMsg.className = 'status-msg error';
-                statusMsg.textContent = 'Network error. Please try again later.';
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Secure Entry';
-            }
-        });
     </script>
 
 </body>
